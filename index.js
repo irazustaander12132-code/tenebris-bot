@@ -1,16 +1,24 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const { Groq } = require('groq-sdk');
+const http = require('http');
+
+// 1. TRUCO DE PUERTO (Puesto arriba para que Render lo vea rápido)
+http.createServer((req, res) => {
+    res.write('Tenebris esta vivo');
+    res.end();
+}).listen(process.env.PORT || 10000);
 
 const client = new Client({
-    intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent ]
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ]
 });
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-// Memoria por canal
 const msgHistory = {}; 
 
-// --- AQUÍ ESTÁN LAS INDICACIONES DE PERSONALIDAD ---
 const SYSTEM_PROMPT = `Eres Tenebris, el motor creativo del foro de rol 'Tenebris Anima' (https://tenebrisanima.foroactivo.com/).
 Escenario: Inglaterra, Londres Mágico y Hogwarts en el año 2026. Es un mundo de fantasía urbana mágica: elegante, vivo y moderno. 
 
@@ -30,7 +38,6 @@ client.once('ready', () => {
 
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
-
     const channelId = message.channel.id;
 
     if (!msgHistory[channelId]) {
@@ -39,7 +46,6 @@ client.on('messageCreate', async (message) => {
 
     msgHistory[channelId].push({ role: "user", content: message.content });
 
-    // Mantener 12 mensajes de memoria
     if (msgHistory[channelId].length > 30) {
         msgHistory[channelId].splice(1, 1); 
     }
@@ -52,19 +58,14 @@ client.on('messageCreate', async (message) => {
 
         const response = chatCompletion.choices[0].message.content;
         msgHistory[channelId].push({ role: "assistant", content: response });
-
         await message.reply(response);
     } catch (error) {
         console.error(error);
-        await message.reply("Las sombras se agitan... algo ha fallado en la conexión.");
     }
 });
 
 client.login(process.env.DISCORD_TOKEN);
-// TRUCO PARA RENDER (Esto va aquí, no en package.json)
-http.createServer((req, res) => {
-    res.write('Tenebris esta vivo');
-    res.end();
-}).listen(process.env.PORT || 10000);
 
-client.login(process.env.DISCORD_TOKEN);
+
+
+
