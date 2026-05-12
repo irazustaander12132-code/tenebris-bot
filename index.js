@@ -2,7 +2,7 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { Groq } = require('groq-sdk');
 const http = require('http');
 
-// Servidor básico para que Render no apague el bot
+// Servidor para Render
 http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.write('Tenebris Anima Engine Online');
@@ -33,17 +33,16 @@ POST DE ROL: Narrativo (3-4 párrafos), inmersivo. Deja la acción abierta.
 DUDAS Y FICHAS: Usa el catálogo oficial del foro.`;
 
 client.once('ready', () => {
-    console.log(`Logueado como ${client.user.tag}`);
+    console.log(`Tenebris ha despertado con el modelo Llama 3.1`);
 });
 
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
-    
     const channelId = message.channel.id;
 
     if (message.content.toLowerCase() === '!t reset') {
         msgHistory[channelId] = [];
-        return message.reply("Nieblas despejadas. Memoria reiniciada.");
+        return message.reply("Nieblas despejadas. ¿Qué deseas saber ahora?");
     }
 
     if (!msgHistory[channelId]) msgHistory[channelId] = [];
@@ -51,20 +50,26 @@ client.on('messageCreate', async (message) => {
 
     if (msgHistory[channelId].length > 15) msgHistory[channelId].shift();
 
-    const messagesToSend = [{ role: "system", content: SYSTEM_PROMPT }, ...msgHistory[channelId]];
+    const messagesToSend = [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...msgHistory[channelId]
+    ];
 
     try {
         const chatCompletion = await groq.chat.completions.create({
             messages: messagesToSend,
-            model: "llama3-8b-8192",
+            model: "llama-3.1-8b-instant", // <--- EL MODELO NUEVO AQUÍ
             temperature: 0.6,
+            max_tokens: 1000,
         });
 
         const response = chatCompletion.choices[0].message.content;
         msgHistory[channelId].push({ role: "assistant", content: response });
         await message.reply(response);
+
     } catch (error) {
-        console.error("Error:", error.message);
+        console.error("ERROR EN GROQ:", error.message);
+        await message.reply("Las sombras se agitan... algo ha fallado en la conexión.");
     }
 });
 
