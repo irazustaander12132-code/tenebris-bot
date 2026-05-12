@@ -244,7 +244,7 @@ client.on('messageCreate', async (message) => {
         const chatCompletion = await groq.chat.completions.create({
             messages: messagesToSend,
             model: "llama-3.1-8b-instant",
-            temperature: 0.5, // Menor temperatura = menos inventiva, más caso al texto
+            temperature: 0.65, // Menor temperatura = menos inventiva, más caso al texto
         });
 
         const response = chatCompletion.choices[0].message.content;
