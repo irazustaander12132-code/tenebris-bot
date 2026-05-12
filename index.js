@@ -40,7 +40,7 @@ client.on('messageCreate', async (message) => {
     msgHistory[channelId].push({ role: "user", content: message.content });
 
     // Mantener 12 mensajes de memoria
-    if (msgHistory[channelId].length > 12) {
+    if (msgHistory[channelId].length > 30) {
         msgHistory[channelId].splice(1, 1); 
     }
 
