@@ -11,9 +11,3 @@
     "groq-sdk": "^0.3.3"
   }
 }
-// Truco para engañar a Render y que no apague el bot
-const http = require('http');
-http.createServer((req, res) => {
-    res.write('Tenebris esta despierto');
-    res.end();
-}).listen(process.env.PORT || 10000);
