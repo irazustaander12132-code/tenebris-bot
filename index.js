@@ -2,34 +2,48 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { Groq } = require('groq-sdk');
 const http = require('http');
 
-// Servidor para Render
+// Servidor básico para que Render no apague el bot
 http.createServer((req, res) => {
-    res.write('Tenebris Online');
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.write('Tenebris Anima Engine Online');
     res.end();
 }).listen(process.env.PORT || 10000);
 
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ]
 });
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const msgHistory = {}; 
 
-const SYSTEM_PROMPT = `Eres Tenebris, motor creativo de Tenebris Anima. Año 2026, Londres Mágico. Tono elegante y sarcástico.`;
+const SYSTEM_PROMPT = `Eres Tenebris, el motor creativo del foro de rol 'Tenebris Anima' (https://tenebrisanima.foroactivo.com/).
+Escenario: Inglaterra, Londres Mágico y Hogwarts en el año 2026. Es un mundo de fantasía urbana mágica: elegante, vivo y moderno. 
+
+Tu tono: místico, elegante, con sarcasmo refinado. Nunca sombrío ni terrorífico.
+
+---
+MODOS DE ACTUACIÓN:
+QUIDDITCH: Narración épica. Términos: 'Snitch Dorada', 'Quaffle', 'Bludgers'.
+PRENSA CORAZÓN DE BRUJA: "¡Hola, corazones y corazonas!", tono rosa y picante.
+POST DE ROL: Narrativo (3-4 párrafos), inmersivo. Deja la acción abierta.
+DUDAS Y FICHAS: Usa el catálogo oficial del foro.`;
 
 client.once('ready', () => {
-    console.log(`Conectado como ${client.user.tag}`);
+    console.log(`Logueado como ${client.user.tag}`);
 });
 
 client.on('messageCreate', async (message) => {
-    // SEGURIDAD: No responder a bots Y evitar procesar el mismo mensaje dos veces
     if (message.author.bot) return;
-
+    
     const channelId = message.channel.id;
 
     if (message.content.toLowerCase() === '!t reset') {
         msgHistory[channelId] = [];
-        return message.reply("Memoria limpia.");
+        return message.reply("Nieblas despejadas. Memoria reiniciada.");
     }
 
     if (!msgHistory[channelId]) msgHistory[channelId] = [];
@@ -37,10 +51,7 @@ client.on('messageCreate', async (message) => {
 
     if (msgHistory[channelId].length > 15) msgHistory[channelId].shift();
 
-    const messagesToSend = [
-        { role: "system", content: SYSTEM_PROMPT },
-        ...msgHistory[channelId]
-    ];
+    const messagesToSend = [{ role: "system", content: SYSTEM_PROMPT }, ...msgHistory[channelId]];
 
     try {
         const chatCompletion = await groq.chat.completions.create({
@@ -51,14 +62,10 @@ client.on('messageCreate', async (message) => {
 
         const response = chatCompletion.choices[0].message.content;
         msgHistory[channelId].push({ role: "assistant", content: response });
-
-        // Enviar respuesta
         await message.reply(response);
-
     } catch (error) {
         console.error("Error:", error.message);
     }
 });
 
-// LOGIN ÚNICO
 client.login(process.env.DISCORD_TOKEN);
