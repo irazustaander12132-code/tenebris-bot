@@ -61,3 +61,10 @@ client.on('messageCreate', async (message) => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+// TRUCO PARA RENDER (Esto va aquí, no en package.json)
+http.createServer((req, res) => {
+    res.write('Tenebris esta vivo');
+    res.end();
+}).listen(process.env.PORT || 10000);
+
+client.login(process.env.DISCORD_TOKEN);
