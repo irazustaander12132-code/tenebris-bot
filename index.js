@@ -310,5 +310,7 @@ client.on('messageCreate', async (message) => {
             await message.reply("Mi respuesta era demasiado larga para las leyes de este mundo (Discord). Intenta ser más específico.");
         } else {
             await message.reply("Las sombras fallan... comprueba mi conexión.");
-        }
     }
+}); // <--- ESTA LLAVE CIERRA EL client.on
+
+client.login(process.env.DISCORD_TOKEN);
