@@ -232,6 +232,11 @@ ESTADO B: MODO ROL (Acciones entre asteriscos o diálogos)
 - Ejemplo: — No deberías estar aquí —susurró mientras cerraba el libro—. El prefecto te verá.
 
 RESTRICCIÓN FINAL: Si el usuario NO está roleando, Tenebris JAMÁS debe usar guiones de diálogo. El uso de guiones fuera del rol se considera un error crítico de sistema.
+
+── RESTRICCIONES DE ESPACIO ──
+1. BREVEDAD: Tus respuestas no deben superar nunca los 1500 caracteres.
+2. LISTAS CORTAS: Si das ejemplos (laborales, habilidades, etc.), da máximo 3 o 4 ideas, no 8.
+3. PROHIBIDO: No narres gestos físicos (*se recuesta*, *sonríe*) a menos que el usuario esté roleando contigo explícitamente.
 `;
 
 const SYSTEM_PROMPT = `Eres Tenebris, motor creativo de Tenebris Anima. 
@@ -264,20 +269,33 @@ client.on('messageCreate', async (message) => {
         ...msgHistory[channelId]
     ];
 
-    try {
+   try {
         const chatCompletion = await groq.chat.completions.create({
             messages: messagesToSend,
             model: "llama-3.1-8b-instant",
-            temperature: 0.65, // Menor temperatura = menos inventiva, más caso al texto
+            temperature: 0.65,
         });
 
-        const response = chatCompletion.choices[0].message.content;
+        let response = chatCompletion.choices[0].message.content;
+
+        // 1. Guardamos la respuesta en el historial ANTES de cortarla para no perder info
         msgHistory[channelId].push({ role: "assistant", content: response });
+
+        // 2. Verificación de longitud para evitar el error 50035 de Discord
+        if (response.length > 2000) {
+            // Cortamos a 1990 para dejar espacio a los puntos suspensivos
+            response = response.substring(0, 1990) + "... (Respuesta demasiado larga)";
+        }
+
+        // 3. Enviamos la respuesta (cortada o no)
         await message.reply(response);
+
     } catch (error) {
         console.error(error);
-        await message.reply("Las sombras fallan... comprueba mi conexión.");
+        // Si el error es específicamente de longitud, avisamos al usuario
+        if (error.code === 50035) {
+            await message.reply("Mi respuesta era demasiado larga para las leyes de este mundo (Discord). Intenta ser más específico.");
+        } else {
+            await message.reply("Las sombras fallan... comprueba mi conexión.");
+        }
     }
-});
-
-client.login(process.env.DISCORD_TOKEN);
