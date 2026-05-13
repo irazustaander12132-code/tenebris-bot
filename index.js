@@ -262,7 +262,7 @@ client.on('messageCreate', async (message) => {
         const chatCompletion = await groq.chat.completions.create({
             messages: messagesToSend,
             model: "llama-3.1-8b-instant",
-            temperature: 0.65,
+            temperature: 0.5,
         });
 
         let response = chatCompletion.choices[0].message.content;
@@ -270,11 +270,11 @@ client.on('messageCreate', async (message) => {
         // 1. Guardamos la respuesta en el historial ANTES de cortarla para no perder info
         msgHistory[channelId].push({ role: "assistant", content: response });
 
-        // 2. Verificación de longitud para evitar el error 50035 de Discord
-        if (response.length > 2000) {
-            // Cortamos a 1990 para dejar espacio a los puntos suspensivos
-            response = response.substring(0, 1990) + "... (Respuesta demasiado larga)";
-        }
+      // 2. Verificación de longitud para evitar el error 50035 de Discord
+if (response.length > 2000) {
+    // Recortamos el texto y le ponemos un final elegante que no rompa el estilo
+    response = response.substring(0, 1950) + "... \n\n*(El informe continúa, pero las sombras se vuelven densas. Sé más específico para leer más)*";
+}
 
         // 3. Enviamos la respuesta (cortada o no)
         await message.reply(response);
