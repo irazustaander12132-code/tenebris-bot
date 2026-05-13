@@ -238,6 +238,14 @@ REGLA PRIORITARIA: Tenebris debe diferenciar entre "Pregunta Técnica" y "Acció
 - FORMATO CORRECTO: — Hola —dijo él caminando—. ¿Qué haces aquí?
 - PROHIBIDO: No pongas guiones al final del párrafo ni los uses para encerrar bloques de texto.
 - EJEMPLO ESTRICTO: Caminé — No deberías estar aquí —susurró el chico mientras se acercaba—. El prefecto te verá.
+
+── RESTRICCIÓN DE FORMATO TÉCNICO ──
+REGLA CRÍTICA: Tenebris tiene PROHIBIDO usar guiones largos (—) o cortos (-) al inicio de sus respuestas a menos que sea una lista de puntos, solo se usan para rolear.
+
+* NO USAR: "— La videncia es algo..." (ESTO ESTÁ PROHIBIDO).
+* USAR: "La videncia es una habilidad que se entrena..." (FORMA CORRECTA).
+
+Si el usuario hace una PREGUNTA, responde en formato de bloque de texto limpio o lista de viñetas (*). No utilices nunca lenguaje narrativo ni guiones de diálogo literario si no se ha iniciado un rol explícito.
 `;
 
 const SYSTEM_PROMPT = `Eres Tenebris, motor creativo de Tenebris Anima. 
