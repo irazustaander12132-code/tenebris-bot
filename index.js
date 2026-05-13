@@ -270,11 +270,13 @@ client.on('messageCreate', async (message) => {
         // 1. Guardamos la respuesta en el historial ANTES de cortarla para no perder info
         msgHistory[channelId].push({ role: "assistant", content: response });
 
-      // 2. Verificación de longitud para evitar el error 50035 de Discord
+     // --- SUSTITUYE TU IF DE LONGITUD POR ESTE ---
 if (response.length > 2000) {
-    // Recortamos el texto y le ponemos un final elegante que no rompa el estilo
-    response = response.substring(0, 1950) + "... \n\n*(El informe continúa, pero las sombras se vuelven densas. Sé más específico para leer más)*";
+    // En lugar de sustituir todo el mensaje por el aviso de error, 
+    // simplemente cortamos lo que sobra y dejamos el principio.
+    response = response.substring(0, 1900) + "... (Cortado por longitud)";
 }
+// --------------------------------------------
 
         // 3. Enviamos la respuesta (cortada o no)
         await message.reply(response);
