@@ -303,14 +303,15 @@ client.on('messageCreate', async (message) => {
         // 3. Enviamos la respuesta (cortada o no)
         await message.reply(response);
 
-    } catch (error) {
+} catch (error) {
         console.error(error);
         // Si el error es específicamente de longitud, avisamos al usuario
         if (error.code === 50035) {
             await message.reply("Mi respuesta era demasiado larga para las leyes de este mundo (Discord). Intenta ser más específico.");
         } else {
             await message.reply("Las sombras fallan... comprueba mi conexión.");
-    }
-}); // <--- ESTA LLAVE CIERRA EL client.on
+        } // <--- ESTA LLAVE FALTABA PARA CERRAR EL 'else'
+    } // <--- ESTA LLAVE CIERRA EL 'catch'
+}); // <--- ESTA LLAVE CIERRA EL 'client.on'
 
 client.login(process.env.DISCORD_TOKEN);
