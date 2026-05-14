@@ -2,7 +2,8 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { Groq } = require('groq-sdk');
 const http = require('http');
 
-// Servidor para Render (Evita el error de puerto)
+// 1. Servidor para Render y UptimeRobot
+// Mantiene el bot encendido respondiendo a las peticiones del monitor
 http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.write('Tenebris Anima Engine Online');
