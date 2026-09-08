@@ -311,4 +311,6 @@ client.on('error', error => {
     console.error("ERROR DISCORD:", error);
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN)
+    .then(() => console.log("TOKEN ACEPTADO, CONECTANDO A DISCORD"))
+    .catch(err => console.error("ERROR LOGIN DISCORD:", err));
