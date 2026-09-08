@@ -265,7 +265,7 @@ client.on('messageCreate', async (message) => {
    try {
         const chatCompletion = await groq.chat.completions.create({
             messages: messagesToSend,
-            model: "llama-3.3-70b-versatile",
+            model: "llama-3.1-8b-instant",
             temperature: 0.5,
         });
 
