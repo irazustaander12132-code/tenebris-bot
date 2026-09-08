@@ -265,16 +265,10 @@ client.on('messageCreate', async (message) => {
   try {
     console.log("ENTRANDO EN GROQ");
 
-    const models = await groq.models.list();
-
-    console.log("MODELOS DISPONIBLES:");
-    for (const model of models.data) {
-        console.log(model.id);
-    }
 
     const chatCompletion = await groq.chat.completions.create({
         messages: messagesToSend,
-        model: "llama-3.1-8b-instant",
+        model: "openai/gpt-oss-20b",
         temperature: 0.5,
     });
 
