@@ -242,7 +242,13 @@ ESTILO: Usa guiones largos (—) para rolear.
 ${LORE_DATABASE}
 </LORE>`;
 
+client.once('ready', () => {
+    console.log(`Tenebris conectado como ${client.user.tag}`);
+});
+
 client.on('messageCreate', async (message) => {
+    console.log("MENSAJE RECIBIDO:", message.content);
+
     if (message.author.bot) return;
     const channelId = message.channel.id;
 
