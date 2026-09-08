@@ -262,15 +262,18 @@ client.on('messageCreate', async (message) => {
         ...msgHistory[channelId]
     ];
 
-  try {
+try {
     console.log("ENTRANDO EN GROQ");
-
 
     const chatCompletion = await groq.chat.completions.create({
         messages: messagesToSend,
         model: "openai/gpt-oss-20b",
         temperature: 0.5,
     });
+
+    console.log("GROQ RESPONDIÓ");
+
+    // aquí sigue tu código que envía la respuesta a Discord
 
         let response = chatCompletion.choices[0].message.content;
 
