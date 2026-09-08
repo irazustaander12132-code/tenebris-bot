@@ -303,4 +303,12 @@ if (response.length > 2000) {
     } // <--- ESTA LLAVE CIERRA EL 'catch'
 }); // <--- ESTA LLAVE CIERRA EL 'client.on'
 
+client.once('ready', () => {
+    console.log(`TENEBRIS ONLINE: ${client.user.tag}`);
+});
+
+client.on('error', error => {
+    console.error("ERROR DISCORD:", error);
+});
+
 client.login(process.env.DISCORD_TOKEN);
