@@ -180,7 +180,6 @@ ${LORE_DATABASE}
 `;
 // --- SISTEMA DE HISTORIAL Y RESPUESTA ---
 
-client.on('messageCreate', async (message) => {
 
     console.log("MENSAJE RECIBIDO:", message.content);
 
