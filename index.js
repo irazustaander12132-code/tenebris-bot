@@ -263,6 +263,7 @@ client.on('messageCreate', async (message) => {
     ];
 
   try {
+    console.log("ENTRANDO EN GROQ");
 
     const models = await groq.models.list();
 
