@@ -262,12 +262,20 @@ client.on('messageCreate', async (message) => {
         ...msgHistory[channelId]
     ];
 
-   try {
-        const chatCompletion = await groq.chat.completions.create({
-            messages: messagesToSend,
-            model: "llama-3.1-8b-instant",
-            temperature: 0.5,
-        });
+  try {
+
+    const models = await groq.models.list();
+
+    console.log("MODELOS DISPONIBLES:");
+    for (const model of models.data) {
+        console.log(model.id);
+    }
+
+    const chatCompletion = await groq.chat.completions.create({
+        messages: messagesToSend,
+        model: "llama-3.1-8b-instant",
+        temperature: 0.5,
+    });
 
         let response = chatCompletion.choices[0].message.content;
 
